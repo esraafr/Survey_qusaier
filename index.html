@@ -8,13 +8,24 @@
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; margin: 20px; }
         label { font-weight: bold; }
         .hidden { display: none; }
+        .case-number-box {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid black;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <h2>استبيان العائلات المتضررة</h2>
+    <h2>استبيان العائلات المتضررة في قرية البويضة الشرقية</h2>
 
-    <form id="surveyForm">
+    <p>رقم اضبارة: <span id="caseNumber">جارٍ توليد الرقم...</span></p>
+
+    <form id="surveyForm" action="https://script.google.com/macros/s/AKfycbynZr5px-5ft1oy7YRzAZXDKN1wUXul2fctHdwrR68iCY_wxKdl4BmgQ5JuIGlixdGIQA/exec" method="POST">
         <label>اسم رب الأسرة:</label>
         <input type="text" name="father_name" required><br><br>
 
@@ -48,40 +59,74 @@
         <input type="text" name="previous_residence" required><br><br>
 
         <label>رقم العائلة للتواصل على الواتساب:</label>
-        <input type="tel" name="family_whatsapp" required placeholder="09XXXXXXXX"><br><br>
+        <input type="tel" name="family_whatsapp" required placeholder="مثال: 09XXXXXXXX"><br><br>
+
+        <label>هل لديكم ألواح طاقة شمسية؟</label>
+        <select name="solar_panels" required>
+            <option value="نعم">نعم</option>
+            <option value="لا">لا</option>
+        </select><br><br>
+
+        <label>هل المنزل الحالي خيمة أم منزل ثابت؟</label>
+        <select name="house_type" required>
+            <option value="خيمة">خيمة</option>
+            <option value="منزل ثابت">منزل ثابت</option>
+        </select><br><br>
+
+        <label>كيف حال المنزل القديم؟</label>
+        <select name="old_house_condition" required>
+            <option value="مهدم جزئيًا">مهدم جزئيًا</option>
+            <option value="مهدم كليًا">مهدم كليًا</option>
+        </select><br><br>
+
+        <label>هل يوجد أفراد ذوي احتياجات خاصة؟</label>
+        <select name="special_needs" onchange="toggleSpecialNeeds()">
+            <option value="لا">لا</option>
+            <option value="نعم">نعم</option>
+        </select><br><br>
+
+        <div id="specialNeedsField" class="hidden">
+            <label>كم عدد الأفراد ذوي الاحتياجات الخاصة؟</label>
+            <input type="number" name="special_needs_count" min="1" max="10"><br><br>
+        </div>
+
+        <label>ملاحظات إضافية:</label>
+        <textarea name="additional_notes" rows="4"></textarea><br><br>
 
         <button type="submit">إرسال</button>
     </form>
 
-    <p id="result"></p>
+    <div id="caseNumberBox" class="case-number-box">
+        <p>رقم اضبارة العائلة: <span id="finalCaseNumber"></span></p>
+        <p>يرجى الاحتفاظ بهذا الرقم لمراجعتنا.</p>
+    </div>
 
     <script>
+        function generateCaseNumber() {
+            return 'A' + Math.floor(Math.random() * 1000000) + '-' + Date.now();
+        }
+
+        let caseNumber = generateCaseNumber();
+        document.getElementById('caseNumber').innerText = caseNumber;
+
         function toggleWifeJob() {
             var select = document.querySelector("select[name='wife_works']");
             var jobField = document.getElementById("wifeJobField");
             jobField.style.display = select.value === "نعم" ? "block" : "none";
         }
 
+        function toggleSpecialNeeds() {
+            var select = document.querySelector("select[name='special_needs']");
+            var specialNeedsField = document.getElementById("specialNeedsField");
+            specialNeedsField.style.display = select.value === "نعم" ? "block" : "none";
+        }
+
         document.getElementById("surveyForm").onsubmit = function(event) {
             event.preventDefault();
 
-            var formData = new FormData(event.target);
-            var jsonData = {};
-            formData.forEach((value, key) => { jsonData[key] = value; });
-
-            fetch("https://script.google.com/macros/s/AKfycby2Do9jpdpVUIvRzhyCw2Qkl6kagNgTAg6SKAT3-NdPXGGW9byAA8PiHfX3vjgVXOC1uQ/exec", {
-                method: "POST",
-                body: JSON.stringify(jsonData),
-                headers: { "Content-Type": "application/json" }
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("result").innerText = "تم إرسال البيانات بنجاح!";
-                document.getElementById("surveyForm").reset();
-            })
-            .catch(error => {
-                document.getElementById("result").innerText = "حدث خطأ أثناء الإرسال.";
-            });
+            document.getElementById("surveyForm").style.display = "none";
+            document.getElementById("finalCaseNumber").innerText = caseNumber;
+            document.getElementById("caseNumberBox").style.display = "block";
         };
     </script>
 
