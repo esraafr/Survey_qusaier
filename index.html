@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -8,17 +7,14 @@
     <style>
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; margin: 20px; }
         label { font-weight: bold; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <h2>استبيان العائلات المتضررة في قرية البويضة الشرقية</h2>
+    <h2>استبيان العائلات المتضررة</h2>
 
-    <!-- رقم اضبارة العائلة -->
-    <p>رقم اضبارة: <span id="caseNumber">جارٍ توليد الرقم...</span></p>
-
-    <form action="submit.php" method="POST">
-        <!-- معلومات رب الأسرة -->
+    <form id="surveyForm">
         <label>اسم رب الأسرة:</label>
         <input type="text" name="father_name" required><br><br>
 
@@ -28,7 +24,6 @@
         <label>ما طبيعة عمل رب الأسرة؟</label>
         <input type="text" name="father_job"><br><br>
 
-        <!-- معلومات الزوجة -->
         <label>اسم الزوجة:</label>
         <input type="text" name="mother_name" required><br><br>
 
@@ -46,74 +41,48 @@
             <input type="text" name="wife_job"><br><br>
         </div>
 
-        <!-- عدد أفراد العائلة -->
         <label>عدد أفراد العائلة:</label>
         <input type="number" name="family_members" min="1" required><br><br>
 
-        <!-- حالة الكهرباء -->
-        <label>هل لديكم ألواح طاقة شمسية لتوليد الكهرباء؟</label>
-        <select name="solar_panels" required>
-            <option value="نعم">نعم</option>
-            <option value="لا">لا</option>
-        </select><br><br>
+        <label>مكان الإقامة السابق:</label>
+        <input type="text" name="previous_residence" required><br><br>
 
-        <!-- حالة المنزل -->
-        <label>هل المنزل الحالي خيمة أم منزل ثابت؟</label>
-        <select name="house_type" required>
-            <option value="خيمة">خيمة</option>
-            <option value="منزل ثابت">منزل ثابت</option>
-        </select><br><br>
-
-        <!-- حالة المنزل القديم -->
-        <label>كيف حال المنزل القديم؟</label>
-        <select name="old_house_condition" required>
-            <option value="مهدم جزئيًا">مهدم جزئيًا</option>
-            <option value="مهدم كليًا">مهدم كليًا</option>
-        </select><br><br>
-
-        <!-- أفراد ذوي احتياجات خاصة -->
-        <label>هل يوجد أفراد ذوي احتياجات خاصة في العائلة؟</label>
-        <select name="special_needs" onchange="toggleSpecialNeeds()">
-            <option value="لا">لا</option>
-            <option value="نعم">نعم</option>
-        </select><br><br>
-
-        <div id="specialNeedsField" class="hidden">
-            <label>كم عدد أفراد العائلة ذوي الاحتياجات الخاصة؟</label>
-            <input type="number" name="special_needs_count" min="1" max="10"><br><br>
-        </div>
-
-        <label>ملاحظات إضافية:</label>
-        <textarea name="additional_notes" rows="4"></textarea><br><br>
+        <label>رقم العائلة للتواصل على الواتساب:</label>
+        <input type="tel" name="family_whatsapp" required placeholder="09XXXXXXXX"><br><br>
 
         <button type="submit">إرسال</button>
     </form>
 
+    <p id="result"></p>
+
     <script>
-        // توليد رقم اضبارة عشوائي عند فتح الصفحة
-        function generateCaseNumber() {
-            var caseNumber = 'A' + Math.floor(Math.random() * 1000000) + '-' + Date.now();
-            document.getElementById('caseNumber').innerText = caseNumber;
-        }
-
-        // توليد رقم اضبارة عند تحميل الصفحة
-        window.onload = function() {
-            generateCaseNumber();
-        }
-
-        // إظهار أو إخفاء حقل عمل الزوجة بناءً على الاختيار
         function toggleWifeJob() {
             var select = document.querySelector("select[name='wife_works']");
             var jobField = document.getElementById("wifeJobField");
             jobField.style.display = select.value === "نعم" ? "block" : "none";
         }
 
-        // إظهار أو إخفاء حقل عدد أفراد ذوي الاحتياجات الخاصة بناءً على الاختيار
-        function toggleSpecialNeeds() {
-            var select = document.querySelector("select[name='special_needs']");
-            var specialNeedsField = document.getElementById("specialNeedsField");
-            specialNeedsField.style.display = select.value === "نعم" ? "block" : "none";
-        }
+        document.getElementById("surveyForm").onsubmit = function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(event.target);
+            var jsonData = {};
+            formData.forEach((value, key) => { jsonData[key] = value; });
+
+            fetch("https://script.google.com/macros/s/AKfycby2Do9jpdpVUIvRzhyCw2Qkl6kagNgTAg6SKAT3-NdPXGGW9byAA8PiHfX3vjgVXOC1uQ/exec", {
+                method: "POST",
+                body: JSON.stringify(jsonData),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").innerText = "تم إرسال البيانات بنجاح!";
+                document.getElementById("surveyForm").reset();
+            })
+            .catch(error => {
+                document.getElementById("result").innerText = "حدث خطأ أثناء الإرسال.";
+            });
+        };
     </script>
 
 </body>
