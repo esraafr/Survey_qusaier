@@ -3,132 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استبيان العائلات المتضررة</title>
+    <title>استبيان مشروع صغير – جمعية التنمية السورية</title>
     <style>
-        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; margin: 20px; }
-        label { font-weight: bold; }
-        .hidden { display: none; }
-        .case-number-box {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
             padding: 10px;
-            border: 2px solid black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .confirmation {
             display: none;
+            text-align: center;
+        }
+        .confirmation h1 {
+            color: #28a745;
         }
     </style>
 </head>
 <body>
 
-    <h2>استبيان العائلات المتضررة في قرية البويضة الشرقية</h2>
+<div class="container" id="formContainer">
+    <h1>استبيان مشروع صغير – جمعية التنمية السورية</h1>
+    <p>يرجى تعبئة الاستبيان بدقة لضمان دراسة مشروعك بالشكل الأمثل.</p>
+    
+    <form id="surveyForm">
+        <h2>المعلومات الشخصية</h2>
+        <label>رقم الإضبارة (يتم إنشاؤه تلقائيًا):</label>
+        <input type="text" id="caseNumber" name="case_number" readonly>
 
-    <p>رقم اضبارة: <span id="caseNumber">جارٍ توليد الرقم...</span></p>
+        <label>الاسم الكامل:</label>
+        <input type="text" name="fullname" required>
+        
+        <label>تاريخ الميلاد:</label>
+        <input type="date" name="birthdate" required>
+        
+        <label>مكان الإقامة:</label>
+        <input type="text" name="location" required>
+        
+        <label>رقم الهاتف:</label>
+        <input type="tel" name="phone" required>
 
-    <form id="surveyForm" action="https://script.google.com/macros/s/AKfycbxYiw11krks3e028D5F81aE-28Z2AIsLFUySowxswgkEVhWBLiLpH2sv4P2MTmSEQvkcQ/exec" method="POST">
-        <label>اسم رب الأسرة:</label>
-        <input type="text" name="father_name" required><br><br>
-
-        <label>تاريخ ميلاد رب الأسرة:</label>
-        <input type="date" name="father_birthdate" required><br><br>
-
-        <label>ما طبيعة عمل رب الأسرة؟</label>
-        <input type="text" name="father_job"><br><br>
-
-        <label>اسم الزوجة:</label>
-        <input type="text" name="mother_name" required><br><br>
-
-        <label>تاريخ ميلاد الزوجة:</label>
-        <input type="date" name="mother_birthdate" required><br><br>
-
-        <label>هل الزوجة تعمل؟</label>
-        <select name="wife_works" onchange="toggleWifeJob()">
-            <option value="لا">لا</option>
-            <option value="نعم">نعم</option>
-        </select><br><br>
-
-        <div id="wifeJobField" class="hidden">
-            <label>ما طبيعة عمل الزوجة؟</label>
-            <input type="text" name="wife_job"><br><br>
-        </div>
-
-        <label>عدد أفراد العائلة:</label>
-        <input type="number" name="family_members" min="1" required><br><br>
-
-        <label>مكان الإقامة السابق:</label>
-        <input type="text" name="previous_residence" required><br><br>
-
-        <label>رقم العائلة للتواصل على الواتساب:</label>
-        <input type="tel" name="family_whatsapp" required placeholder="مثال: 09XXXXXXXX"><br><br>
-
-        <label>هل لديكم ألواح طاقة شمسية؟</label>
-        <select name="solar_panels" required>
-            <option value="نعم">نعم</option>
-            <option value="لا">لا</option>
-        </select><br><br>
-
-        <label>هل المنزل الحالي خيمة أم منزل ثابت؟</label>
-        <select name="house_type" required>
-            <option value="خيمة">خيمة</option>
-            <option value="منزل ثابت">منزل ثابت</option>
-        </select><br><br>
-
-        <label>كيف حال المنزل القديم؟</label>
-        <select name="old_house_condition" required>
-            <option value="مهدم جزئيًا">مهدم جزئيًا</option>
-            <option value="مهدم كليًا">مهدم كليًا</option>
-        </select><br><br>
-
-        <label>هل يوجد أفراد ذوي احتياجات خاصة؟</label>
-        <select name="special_needs" onchange="toggleSpecialNeeds()">
-            <option value="لا">لا</option>
-            <option value="نعم">نعم</option>
-        </select><br><br>
-
-        <div id="specialNeedsField" class="hidden">
-            <label>كم عدد الأفراد ذوي الاحتياجات الخاصة؟</label>
-            <input type="number" name="special_needs_count" min="1" max="10"><br><br>
-        </div>
-
-        <label>ملاحظات إضافية:</label>
-        <textarea name="additional_notes" rows="4"></textarea><br><br>
-
-        <button type="submit">إرسال</button>
+        <h2>تفاصيل المشروع</h2>
+        <label>اسم المشروع الصغير:</label>
+        <input type="text" name="project_name" required>
+        
+        <label>نوع النشاط:</label>
+        <input type="text" name="project_type" required>
+        
+        <label>عدد سنوات الخبرة:</label>
+        <input type="number" name="experience_years" required>
+        
+        <label>التكلفة التقديرية (بحد أقصى 3000 دولار):</label>
+        <input type="number" name="estimated_cost" max="3000" required>
+        
+        <h2>ملاحظات:</h2>
+        <ul>
+            <li>الحد الأعلى لتكلفة المشروع هو <strong>3000 دولار أمريكي</strong>، لذا يُرجى تقديم تقديرات دقيقة.</li>
+            <li>سيتم تقييم جميع الطلبات وفقًا لمعايير الأهلية والإمكانيات المتاحة.</li>
+        </ul>
+        
+        <button type="submit">إرسال الطلب</button>
     </form>
+</div>
 
-    <div id="caseNumberBox" class="case-number-box">
-        <p>رقم اضبارة العائلة: <span id="finalCaseNumber"></span></p>
-        <p>يرجى الاحتفاظ بهذا الرقم لمراجعتنا.</p>
-    </div>
+<!-- رسالة التأكيد -->
+<div class="container confirmation" id="confirmationContainer">
+    <h1>تم استقبال طلبك بنجاح!</h1>
+    <p>رقم إضبارتك هو: <strong id="confirmedCaseNumber"></strong></p>
+    <p>يرجى حفظ هذا الرقم لمراجعتنا عند الحاجة.</p>
+</div>
 
-    <script>
-        function generateCaseNumber() {
-            return 'A' + Math.floor(Math.random() * 1000000) + '-' + Date.now();
-        }
+<script>
+    // توليد رقم إضبارة عشوائي
+    function generateCaseNumber() {
+        return "SD-" + Math.floor(10000 + Math.random() * 90000);
+    }
 
-        let caseNumber = generateCaseNumber();
-        document.getElementById('caseNumber').innerText = caseNumber;
+    // تعيين رقم الإضبارة في الحقل
+    document.getElementById("caseNumber").value = generateCaseNumber();
 
-        function toggleWifeJob() {
-            var select = document.querySelector("select[name='wife_works']");
-            var jobField = document.getElementById("wifeJobField");
-            jobField.style.display = select.value === "نعم" ? "block" : "none";
-        }
+    document.getElementById("surveyForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // منع الإرسال الافتراضي
 
-        function toggleSpecialNeeds() {
-            var select = document.querySelector("select[name='special_needs']");
-            var specialNeedsField = document.getElementById("specialNeedsField");
-            specialNeedsField.style.display = select.value === "نعم" ? "block" : "none";
-        }
+        let caseNumber = document.getElementById("caseNumber").value;
 
-        document.getElementById("surveyForm").onsubmit = function(event) {
-            event.preventDefault();
+        // إخفاء الاستبيان وعرض رسالة التأكيد
+        document.getElementById("formContainer").style.display = "none";
+        document.getElementById("confirmationContainer").style.display = "block";
 
-            document.getElementById("surveyForm").style.display = "none";
-            document.getElementById("finalCaseNumber").innerText = caseNumber;
-            document.getElementById("caseNumberBox").style.display = "block";
-        };
-    </script>
+        // عرض رقم الإضبارة في صفحة التأكيد
+        document.getElementById("confirmedCaseNumber").innerText = caseNumber;
+    });
+</script>
 
 </body>
 </html>
